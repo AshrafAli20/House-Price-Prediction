@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>House Price Prediction | XGBoost</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS File -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+
+        <div class="nav-brand">
+            <span>Vihara</span>
+            <strong>Tech</strong>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="#prediction">Predict Price</a>
+        </div>
+
+    </nav>
+
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+
+        <!-- PROFILE SECTION - LEFT SIDE -->
+        <section class="profile-section">
+
+            <div class="profile-card">
+
+                <div class="profile-img-wrapper">
+                    <img
+                        src="{{ url_for('static', filename='profile.jpg') }}"
+                        alt="Shaik Ashraf Ali"
+                        class="profile-img"
+                    >
+                </div>
+
+                <div class="profile-info">
+
+                    <h3>Shaik Ashraf Ali</h3>
+
+                    <p>
+                        <a href="mailto:shaikashrafali.aa@gmail.com">
+                            shaikashrafali.aa@gmail.com
+                        </a>
+                    </p>
+
+                    <p>
+                        <a href="tel:9885737564">
+                            9885737564
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HERO CONTENT - RIGHT SIDE -->
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                MACHINE LEARNING PROJECT
+            </span>
+
+            <h1>
+                Find Your Dream Home's
+                <span>Estimated Value</span>
+            </h1>
+
+            <p>
+                Predict house market prices using machine learning.
+                Enter your property details and get an estimated price
+                powered by the XGBoost Regressor.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN PREDICTION SECTION -->
+    <main class="container" id="prediction">
+
+        <div class="form-card">
+
+            <div class="form-header">
+
+                <h2>House Details</h2>
+
+                <p class="subtitle">
+                    Enter the property information below to estimate
+                    its market value.
+                </p>
+
+            </div>
+
+
+            <!-- PREDICTION FORM -->
+            <form action="/predict" method="POST">
+
+
+                <!-- PROPERTY DETAILS -->
+                <div class="form-section">
+
+                    <h3>01. Property Information</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="bedrooms">Bedrooms</label>
+
+                            <input type="number"
+                                   id="bedrooms"
+                                   name="bedrooms"
+                                   min="0"
+                                   step="1"
+                                   placeholder="Example: 3"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bathrooms">Bathrooms</label>
+
+                            <input type="number"
+                                   id="bathrooms"
+                                   name="bathrooms"
+                                   min="0"
+                                   step="0.25"
+                                   placeholder="Example: 2"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sqft_living">Living Area (sqft)</label>
+
+                            <input type="number"
+                                   id="sqft_living"
+                                   name="sqft_living"
+                                   min="1"
+                                   placeholder="Example: 1800"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sqft_lot">Lot Area (sqft)</label>
+
+                            <input type="number"
+                                   id="sqft_lot"
+                                   name="sqft_lot"
+                                   min="1"
+                                   placeholder="Example: 5000"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="floors">Number of Floors</label>
+
+                            <input type="number"
+                                   id="floors"
+                                   name="floors"
+                                   min="1"
+                                   step="0.5"
+                                   placeholder="Example: 2"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sqft_above">Above Ground Area (sqft)</label>
+
+                            <input type="number"
+                                   id="sqft_above"
+                                   name="sqft_above"
+                                   min="0"
+                                   placeholder="Example: 1500"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sqft_basement">Basement Area (sqft)</label>
+
+                            <input type="number"
+                                   id="sqft_basement"
+                                   name="sqft_basement"
+                                   min="0"
+                                   placeholder="Example: 300"
+                                   required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PROPERTY QUALITY -->
+                <div class="form-section">
+
+                    <h3>02. Property Quality</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="waterfront">Waterfront</label>
+
+                            <select id="waterfront" name="waterfront" required>
+                                <option value="">Select option</option>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="view">View Rating</label>
+
+                            <select id="view" name="view" required>
+                                <option value="">Select rating</option>
+                                <option value="0">0 - No view</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4 - Excellent</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="condition">Property Condition</label>
+
+                            <select id="condition" name="condition" required>
+                                <option value="">Select condition</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2</option>
+                                <option value="3">3 - Average</option>
+                                <option value="4">4</option>
+                                <option value="5">5 - Excellent</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- YEAR DETAILS -->
+                <div class="form-section">
+
+                    <h3>03. Year Information</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="yr_built">Year Built</label>
+
+                            <input type="number"
+                                   id="yr_built"
+                                   name="yr_built"
+                                   min="1800"
+                                   max="2026"
+                                   placeholder="Example: 2005"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="yr_renovated">Year Renovated</label>
+
+                            <input type="number"
+                                   id="yr_renovated"
+                                   name="yr_renovated"
+                                   min="0"
+                                   max="2026"
+                                   placeholder="0 if not renovated"
+                                   required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOCATION DETAILS -->
+                <div class="form-section">
+
+                    <h3>04. Location Information</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+
+                            <input type="text"
+                                   id="city"
+                                   name="city"
+                                   placeholder="Example: Seattle"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="statezip">State ZIP</label>
+
+                            <input type="text"
+                                   id="statezip"
+                                   name="statezip"
+                                   placeholder="Example: WA 98103"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country</label>
+
+                            <input type="text"
+                                   id="country"
+                                   name="country"
+                                   placeholder="Example: USA"
+                                   required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUBMIT BUTTON -->
+                <div class="button-container">
+
+                    <button type="submit" class="predict-btn">
+                        Predict House Price
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- PREDICTION RESULT -->
+            {% if prediction is defined %}
+
+            <div class="result-box">
+
+                <div class="result-check">✓</div>
+
+                <span class="result-label">
+                    PREDICTION GENERATED SUCCESSFULLY
+                </span>
+
+                <h2>${{ "{:,.2f}".format(prediction) }}</h2>
+
+                <p>Estimated House Market Price</p>
+
+                <div class="result-footer">
+                    <span>Powered by</span>
+                    <strong>XGBoost Regressor</strong>
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- ERROR MESSAGE -->
+            {% if error is defined and error %}
+
+            <div class="error-box">
+
+                <strong>Prediction Error</strong>
+
+                <p>{{ error }}</p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <p>
+            © 2026 ViharaTech |
+            Developed by Shaik Ashraf Ali
+        </p>
+
+        <p>Powered by Machine Learning and XGBoost</p>
+
+    </footer>
+
+</body>
+</html>
